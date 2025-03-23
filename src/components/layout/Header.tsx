@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router";
+import { ModeToggle } from "../mode-toggle";
 
 interface HeaderProps {
   onSearch: (query: string) => void;
@@ -24,7 +25,7 @@ export default function Header({ onSearch }: HeaderProps) {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-18 items-center justify-between mx-auto px-5">
         <div className="flex items-center gap-2">
-          <Link to="/" className="text-3xl font-bold">
+          <Link to="/" className="text-xl md:text-3xl font-bold">
             PhotoPoint
           </Link>
         </div>
@@ -47,6 +48,7 @@ export default function Header({ onSearch }: HeaderProps) {
         </form>
 
         <div className="flex items-center gap-4">
+          <ModeToggle />
           <Link to="/cart" className="relative">
             <Button variant="ghost" size="icon">
               <ShoppingCart className="h-5 w-5" />

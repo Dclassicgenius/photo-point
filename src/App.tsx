@@ -4,6 +4,9 @@ import { ThemeProvider } from "./components/theme-provider";
 import Layout from "./components/layout/Layout";
 import { useState } from "react";
 import Home from "./pages/Home";
+import ProductDetail from "./pages/productDetail";
+import { Provider } from "react-redux";
+import { store } from "./store/store";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,7 +31,7 @@ function AppRoutes() {
       <Route element={<Layout onSearch={handleSearch} />}>
         <Route path="/" element={<Home />} />
         <Route path="/cart" element={<p>Cart</p>} />
-        <Route path="/product/:id" element={<p>Product Detail</p>} />
+        <Route path="/product/:id" element={<ProductDetail />} />
       </Route>
     </Routes>
   );
@@ -37,11 +40,13 @@ function AppRoutes() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
-      </ThemeProvider>
+      <Provider store={store}>
+        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        </ThemeProvider>
+      </Provider>
     </QueryClientProvider>
   );
 }

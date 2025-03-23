@@ -25,7 +25,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <Link to={`/product/${product.id}`} className="overflow-hidden">
           <div className="aspect-square overflow-hidden rounded-md">
             <img
-              src={product.image}
+              src={product.image || "/placeholder.svg"}
               alt={product.title}
               className="h-full w-full object-contain transition-transform hover:scale-105"
             />
