@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router";
 import { ModeToggle } from "../mode-toggle";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 interface HeaderProps {
   onSearch: (query: string) => void;
@@ -13,8 +15,12 @@ interface HeaderProps {
 export default function Header({ onSearch }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const cartItems = useSelector((state: RootState) => state.cart.items);
 
-  const totalItems = 10;
+  const totalItems = cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

@@ -6,6 +6,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useProductDetail } from "@/hooks/useProducts";
 import { useDispatch } from "react-redux";
 import { addToCart } from "@/store/cartSlice";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -15,7 +17,6 @@ export default function ProductDetail() {
 
   const handleAddToCart = () => {
     if (!product) return;
-
     dispatch(
       addToCart({
         id: product.id,
@@ -29,14 +30,14 @@ export default function ProductDetail() {
 
   if (isLoading) {
     return (
-      <div className="container py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <Skeleton className="aspect-square rounded-lg" />
-          <div className="space-y-4">
-            <Skeleton className="h-8 w-3/4" />
+      <div className="container max-w-6xl mx-auto py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <Skeleton className="aspect-square rounded-xl" />
+          <div className="space-y-6">
+            <Skeleton className="h-10 w-3/4" />
             <Skeleton className="h-6 w-1/4" />
-            <Skeleton className="h-24 w-full" />
-            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-32 w-full" />
+            <Skeleton className="h-12 w-full" />
           </div>
         </div>
       </div>
@@ -45,12 +46,12 @@ export default function ProductDetail() {
 
   if (error || !product) {
     return (
-      <div className="container py-12 text-center">
-        <h2 className="text-xl font-semibold text-destructive">
+      <div className="container max-w-6xl mx-auto py-16 text-center">
+        <h2 className="text-2xl font-semibold text-destructive mb-4">
           Error loading product
         </h2>
-        <p className="text-muted-foreground mb-6">Please try again later</p>
-        <Button asChild>
+        <p className="text-muted-foreground mb-8">Please try again later</p>
+        <Button asChild size="lg">
           <Link to="/">Back to Products</Link>
         </Button>
       </div>
@@ -58,62 +59,77 @@ export default function ProductDetail() {
   }
 
   return (
-    <div className="max-w-xl py-8">
-      <Button variant="ghost" asChild className="mb-6">
+    <div className="container max-w-6xl mx-auto py-12">
+      <Button variant="ghost" asChild className="mb-8 hover:bg-accent">
         <Link to="/" className="flex items-center">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Products
         </Link>
       </Button>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white p-6 rounded-lg border flex items-center justify-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="bg-card p-8 rounded-xl border shadow-sm hover:shadow-md transition-shadow duration-200">
           <img
             src={product.image || "/placeholder.svg"}
             alt={product.title}
-            className="max-h-[400px] object-contain"
+            className="max-h-[500px] w-full object-contain "
           />
         </div>
 
-        <div className="space-y-4">
-          <h1 className="text-2xl font-bold">{product.title}</h1>
+        <div className="space-y-6">
+          <div>
+            <Badge className="mb-4 uppercase tracking-wide">
+              {product.category}
+            </Badge>
+            <h1 className="text-3xl font-bold tracking-tight mb-4">
+              {product.title}
+            </h1>
 
-          <div className="flex items-center gap-1">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star
-                key={i}
-                className={`h-5 w-5 ${
-                  i < Math.round(product.rating.rate)
-                    ? "fill-primary text-primary"
-                    : "text-muted-foreground"
-                }`}
-              />
-            ))}
-            <span className="text-sm text-muted-foreground ml-2">
-              {product.rating.rate} ({product.rating.count} reviews)
-            </span>
+            <div className="flex items-center gap-1 mb-4">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star
+                  key={i}
+                  className={`h-5 w-5 ${
+                    i < Math.round(product.rating.rate)
+                      ? "fill-yellow-400 text-yellow-400"
+                      : "text-muted-foreground"
+                  }`}
+                />
+              ))}
+              <span className="text-sm text-muted-foreground ml-2">
+                {product.rating.rate} ({product.rating.count} reviews)
+              </span>
+            </div>
+
+            <div className="text-3xl font-bold text-primary">
+              ${product.price.toFixed(2)}
+            </div>
           </div>
 
-          <div className="text-2xl font-bold">${product.price.toFixed(2)}</div>
+          <Separator />
 
-          <div className="border-t pt-4">
-            <h3 className="font-semibold mb-2">Description</h3>
-            <p className="text-muted-foreground">{product.description}</p>
+          <div>
+            <h3 className="text-lg font-semibold mb-3">Description</h3>
+            <p className="text-muted-foreground leading-relaxed">
+              {product.description}
+            </p>
           </div>
 
-          <div className="border-t pt-4">
-            <div className="flex items-center space-x-4">
+          <Separator />
+
+          <div className="space-y-4">
+            <div className="flex items-center gap-6">
               <div className="space-y-2">
-                <label htmlFor="quantity" className="text-sm font-medium">
+                <label htmlFor="quantity" className="text-sm font-medium block">
                   Quantity
                 </label>
                 <select
                   id="quantity"
-                  className="h-10 w-20 rounded-md border border-input bg-background px-3 py-2"
+                  className="h-10 w-24 rounded-md border border-input bg-background px-3 py-2"
                   value={quantity}
                   onChange={(e) => setQuantity(Number(e.target.value))}
                 >
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                  {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
                     <option key={num} value={num}>
                       {num}
                     </option>
@@ -121,20 +137,31 @@ export default function ProductDetail() {
                 </select>
               </div>
 
-              <Button className="flex-1" onClick={handleAddToCart}>
-                <ShoppingCart className="mr-2 h-4 w-4" />
+              <Button size="lg" className="flex-1" onClick={handleAddToCart}>
+                <ShoppingCart className="mr-2 h-5 w-5" />
                 Add to Cart
               </Button>
             </div>
           </div>
 
-          <div className="border-t pt-4">
-            <h3 className="font-semibold mb-2">Details</h3>
-            <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-              <li>Category: {product.category}</li>
-              <li>SKU: PROD-{product.id}</li>
-              <li>In Stock</li>
-            </ul>
+          <Separator />
+
+          <div>
+            <h3 className="text-lg font-semibold mb-3">Product Details</h3>
+            <dl className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <dt className="text-muted-foreground">Category</dt>
+                <dd className="font-medium">{product.category}</dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground">SKU</dt>
+                <dd className="font-medium">PROD-{product.id}</dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground">Availability</dt>
+                <dd className="font-medium text-green-600">In Stock</dd>
+              </div>
+            </dl>
           </div>
         </div>
       </div>

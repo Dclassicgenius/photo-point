@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import ProductDetail from "./pages/productDetail";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
+import Cart from "./pages/Cart";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,7 +31,7 @@ function AppRoutes() {
     <Routes>
       <Route element={<Layout onSearch={handleSearch} />}>
         <Route path="/" element={<Home />} />
-        <Route path="/cart" element={<p>Cart</p>} />
+        <Route path="/cart" element={<Cart />} />
         <Route path="/product/:id" element={<ProductDetail />} />
       </Route>
     </Routes>

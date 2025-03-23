@@ -17,9 +17,7 @@ const Home = () => {
 
   return (
     <div className="container py-6 md:py-8">
-      {/* <ProductFilters categories={categories} onFilterChange={handleFilterChange} onSortChange={handleSortChange} /> */}
-
-      <div className="mt-6 md:mt-8 md:ml-72">
+      <div className="mt-6 md:mt-8">
         <ProductGrid products={products ?? []} isLoading={isLoading} />
       </div>
     </div>

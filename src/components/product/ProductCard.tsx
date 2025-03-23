@@ -9,14 +9,25 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { ShoppingCart } from "lucide-react";
 import type { Product } from "@/types";
+import { useDispatch } from "react-redux";
+import { addToCart } from "@/store/cartSlice";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const dispatch = useDispatch();
   const handleAddToCart = () => {
-    console.log("Add to cart");
+    dispatch(
+      addToCart({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        image: product.image,
+        quantity: 1,
+      })
+    );
   };
 
   return (
