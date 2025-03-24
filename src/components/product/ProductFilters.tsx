@@ -39,6 +39,14 @@ export interface FilterState {
   categories: string[];
 }
 
+const sortOptions = [
+  { value: "featured", label: "Featured" },
+  { value: "price-asc", label: "Price: Low to High" },
+  { value: "price-desc", label: "Price: High to Low" },
+  { value: "name-asc", label: "Name: A to Z" },
+  { value: "name-desc", label: "Name: Z to A" },
+];
+
 export default function ProductFilters({
   categories,
   onFilterChange,
@@ -210,34 +218,15 @@ export default function ProductFilters({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuGroup>
-                <DropdownMenuItem onClick={() => handleSortChange("featured")}>
-                  Featured
-                  {sort === "featured" && <Check className="ml-auto h-4 w-4" />}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleSortChange("price-asc")}>
-                  Price: Low to High
-                  {sort === "price-asc" && (
-                    <Check className="ml-auto h-4 w-4" />
-                  )}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => handleSortChange("price-desc")}
-                >
-                  Price: High to Low
-                  {sort === "price-desc" && (
-                    <Check className="ml-auto h-4 w-4" />
-                  )}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleSortChange("name-asc")}>
-                  Name: A to Z
-                  {sort === "name-asc" && <Check className="ml-auto h-4 w-4" />}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleSortChange("name-desc")}>
-                  Name: Z to A
-                  {sort === "name-desc" && (
-                    <Check className="ml-auto h-4 w-4" />
-                  )}
-                </DropdownMenuItem>
+                {sortOptions.map(({ value, label }) => (
+                  <DropdownMenuItem
+                    key={value}
+                    onClick={() => handleSortChange(value)}
+                  >
+                    {label}
+                    {sort === value && <Check className="ml-auto h-4 w-4" />}
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
