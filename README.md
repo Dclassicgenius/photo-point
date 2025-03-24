@@ -4,6 +4,8 @@
 
 PhotoPoint - это веб-магазин, разработанный с использованием React, TypeScript и Vite.
 
+🌐 **Демо:** [photo-point.netlify.app](https://photo-point.netlify.app)
+
 ## 🚀 Технологии
 
 - React + TypeScript
