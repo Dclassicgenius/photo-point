@@ -53,9 +53,9 @@ export default function ProductCard({ product }: ProductCardProps) {
           <h3 className="font-medium line-clamp-2 h-12">{product.title}</h3>
         </Link>
       </CardContent>
-      <CardFooter className="p-4 pt-0 flex items-center justify-between">
+      <CardFooter className="p-4 py-0 flex flex-col items-start gap-4">
         <div className="font-bold">${product.price.toFixed(2)}</div>
-        <Button size="sm" onClick={handleAddToCart}>
+        <Button className="w-full" onClick={handleAddToCart}>
           <ShoppingCart className="mr-2 h-4 w-4" />
           Add to cart
         </Button>

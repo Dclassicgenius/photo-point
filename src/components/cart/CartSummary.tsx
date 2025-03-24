@@ -1,12 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { clearCart } from "@/store/cartSlice";
 import { CartItem } from "@/types";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 
 interface CartSummaryProps {
   items: CartItem[];
 }
 
 export default function CartSummary({ items }: CartSummaryProps) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const subtotal = items.reduce(
     (total, item) => total + item.price * item.quantity,
     0
@@ -14,6 +20,11 @@ export default function CartSummary({ items }: CartSummaryProps) {
   const shipping = subtotal > 0 ? 10 : 0;
   const tax = subtotal * 0.1;
   const total = subtotal + shipping + tax;
+
+  const handleCheckout = () => {
+    dispatch(clearCart());
+    navigate("/");
+  };
 
   return (
     <div className="rounded-lg border p-6 space-y-4">
@@ -41,7 +52,11 @@ export default function CartSummary({ items }: CartSummaryProps) {
         <span>${total.toFixed(2)}</span>
       </div>
 
-      <Button className="w-full" disabled={items.length === 0}>
+      <Button
+        className="w-full"
+        disabled={items.length === 0}
+        onClick={handleCheckout}
+      >
         Checkout
       </Button>
 

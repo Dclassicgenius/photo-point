@@ -1,57 +1,83 @@
-import { useState } from "react";
-import { ShoppingCart, Search, Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation, useSearchParams } from "react-router";
+import { ShoppingCart, Menu, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Link } from "react-router";
-import { ModeToggle } from "../mode-toggle";
+import { Button } from "@/components/ui/button";
 import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
+import type { RootState } from "@/store/store";
+import { useDebounce } from "@/hooks/useDebounce";
+import { ModeToggle } from "../mode-toggle";
 
-interface HeaderProps {
-  onSearch: (query: string) => void;
-}
-
-export default function Header({ onSearch }: HeaderProps) {
+export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const cartItems = useSelector((state: RootState) => state.cart.items);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
   const totalItems = cartItems.reduce(
     (total, item) => total + item.quantity,
     0
   );
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSearch(searchQuery);
+  useEffect(() => {
+    if (location.pathname === "/") {
+      const q = searchParams.get("q");
+      if (q && q !== searchQuery) {
+        setSearchQuery(q);
+      }
+    } else {
+      setSearchQuery("");
+    }
+  }, [location.pathname, searchParams]);
+
+  useEffect(() => {
+    if (
+      location.pathname === "/" &&
+      debouncedSearchQuery !== searchParams.get("q")
+    ) {
+      const newParams = new URLSearchParams(searchParams.toString());
+
+      if (debouncedSearchQuery) {
+        newParams.set("q", debouncedSearchQuery);
+      } else {
+        newParams.delete("q");
+      }
+
+      setSearchParams(newParams);
+    }
+  }, [debouncedSearchQuery, location.pathname]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+
+    if (location.pathname !== "/") {
+      navigate(`/?q=${encodeURIComponent(e.target.value)}`);
+    }
   };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-18 items-center justify-between mx-auto px-5">
         <div className="flex items-center gap-2">
-          <Link to="/" className="text-xl md:text-3xl font-bold">
+          <Link to="/" className="text-xl font-bold">
             PhotoPoint
           </Link>
         </div>
 
-        <form
-          onSubmit={handleSearch}
-          className="hidden md:flex w-full max-w-sm items-center space-x-2 mx-4"
-        >
+        <div className="hidden md:flex w-full max-w-sm items-center space-x-2 mx-4 px-5">
           <Input
             type="search"
             placeholder="Search products..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
             className="flex-1"
           />
-          <Button type="submit" size="icon">
-            <Search className="h-4 w-4" />
-            <span className="sr-only">Search</span>
-          </Button>
-        </form>
+        </div>
 
         <div className="flex items-center gap-4">
           <ModeToggle />
@@ -82,20 +108,14 @@ export default function Header({ onSearch }: HeaderProps) {
       </div>
 
       {mobileMenuOpen && (
-        <div className="container py-4 md:hidden mx-auto px-5">
-          <form onSubmit={handleSearch} className="flex items-center space-x-2">
-            <Input
-              type="search"
-              placeholder="Search products..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1"
-            />
-            <Button type="submit" size="icon">
-              <Search className="h-4 w-4" />
-              <span className="sr-only">Search</span>
-            </Button>
-          </form>
+        <div className="container py-4 md:hidden">
+          <Input
+            type="search"
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="w-full"
+          />
         </div>
       )}
     </header>
